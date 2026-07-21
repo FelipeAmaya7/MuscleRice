@@ -28,6 +28,7 @@
 @import url('layouts/_hero.css');
 @import url('layouts/_products.css');
 @import url('layouts/_footer.css');
+@import url('pages/_cart-page.css');
 
 /* ==========================================================================
    1. RESET GLOBAL (DESACTIVADO PARA EVITAR COLISIÓN CON LEGACY)

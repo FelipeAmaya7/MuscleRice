@@ -310,3 +310,187 @@
     justify-content: center;
   }
 }
+
+/* ==========================================================================
+   NAV BRANDS DROPDOWN — Premium floating menu
+   ========================================================================== */
+
+/* Wrapper li — needs position:relative so the panel anchors correctly */
+.site-header .nav-dropdown-wrap {
+  position: relative;
+  list-style: none;
+}
+
+/* Trigger button — styled to match the other nav links */
+.site-header .nav-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--mr-nav-color, #665f5f);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  padding: 0.6rem 0.95rem;
+  border-radius: 999px;
+  font-family: var(--mr-font-primary);
+  transition: background 0.25s ease, color 0.25s ease;
+  white-space: nowrap;
+}
+
+.site-header .nav-dropdown-trigger:hover,
+.site-header .nav-dropdown-wrap.is-open .nav-dropdown-trigger {
+  background: rgba(112, 184, 167, 0.18);
+  color: var(--mr-color-primary-active, #5a9080);
+}
+
+/* Chevron icon — rotates when open */
+.site-header .nav-dropdown-caret {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  transition: transform 0.25s var(--mr-transition-bounce, cubic-bezier(0.4,0,0.2,1));
+}
+
+.site-header .nav-dropdown-wrap.is-open .nav-dropdown-caret {
+  transform: rotate(180deg);
+}
+
+/* Floating panel */
+.site-header .nav-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 240px;
+  background: var(--mr-bg-card, #ffffff);
+  border-radius: var(--mr-radius-lg, 12px);
+  box-shadow: var(--mr-shadow-xl, 0 12px 30px rgba(0,0,0,0.25));
+  border: 1px solid rgba(112, 184, 167, 0.2);
+  z-index: var(--mr-z-dropdown, 100);
+  overflow: hidden;
+
+  /* Entry animation */
+  animation: dropdownFadeIn 0.22s var(--mr-transition-smooth, cubic-bezier(0.25,0.46,0.45,0.94)) both;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Panel header label */
+.site-header .nav-dropdown-header {
+  padding: 0.7rem 1rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mr-color-primary, #70b8a7);
+  border-bottom: 1px solid rgba(112, 184, 167, 0.15);
+}
+
+/* Brand list reset */
+.site-header .nav-dropdown-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0;
+}
+
+/* Each brand row */
+.site-header .nav-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--mr-font-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--mr-product-title-color, #2c3e50);
+  transition: background 0.18s ease, color 0.18s ease, padding-left 0.18s ease;
+}
+
+.site-header .nav-dropdown-item:hover {
+  background: rgba(112, 184, 167, 0.1);
+  color: var(--mr-color-primary-active, #5a9080);
+  padding-left: 1.2rem;
+}
+
+.site-header .nav-dropdown-item-icon {
+  font-size: 1.1rem;
+  width: 26px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.site-header .nav-dropdown-item-label {
+  flex: 1;
+}
+
+.site-header .nav-dropdown-item-arrow {
+  width: 14px;
+  height: 14px;
+  opacity: 0;
+  color: var(--mr-color-primary, #70b8a7);
+  transition: opacity 0.18s ease;
+  flex-shrink: 0;
+}
+
+.site-header .nav-dropdown-item:hover .nav-dropdown-item-arrow {
+  opacity: 1;
+}
+
+/* Footer CTA */
+.site-header .nav-dropdown-footer {
+  border-top: 1px solid rgba(112, 184, 167, 0.15);
+  padding: 0.6rem 1rem;
+}
+
+.site-header .nav-dropdown-all {
+  display: block;
+  width: 100%;
+  padding: 0.52rem 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--mr-font-primary);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--mr-color-primary, #70b8a7);
+  text-align: center;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+
+.site-header .nav-dropdown-all:hover {
+  color: var(--mr-color-primary-active, #5a9080);
+}
+
+/* Mobile: let panel take full width and center below trigger */
+@media (max-width: 768px) {
+  .site-header .nav-dropdown-menu {
+    left: 0;
+    transform: none;
+    min-width: 220px;
+  }
+
+  @keyframes dropdownFadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+}

@@ -14,6 +14,7 @@ function ProductosPage() {
   const [error, setError] = useState<string | null>(null);
 
   const [filter, setFilter] = useState('todos');
+  const [brandFilter, setBrandFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('relevancia');
 
@@ -33,13 +34,14 @@ function ProductosPage() {
     fetchProducts();
   }, []);
 
-  // Parse URL for initial category
+  // Parse URL for initial category and brand
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const cat = params.get('cat');
-    if (cat) {
-      setFilter(cat);
-    }
+    const brand = params.get('brand');
+    if (cat) setFilter(cat);
+    if (brand !== null) setBrandFilter(brand);
+    else setBrandFilter('');
   }, [location.search]);
 
   // Derived state (Filtered and Sorted Products)
@@ -49,6 +51,17 @@ function ProductosPage() {
     // Filter by Category
     if (filter !== 'todos') {
       result = result.filter(p => (p.category || '') === filter);
+    }
+
+    // Filter by Brand (URL ?brand=slug — matches product name loosely)
+    if (brandFilter.trim() !== '') {
+      const lowerBrand = brandFilter.toLowerCase();
+      result = result.filter(
+        p =>
+          (p.name || '').toLowerCase().includes(lowerBrand) ||
+          (p.brand || '').toLowerCase().includes(lowerBrand) ||
+          (p.category || '').toLowerCase().includes(lowerBrand)
+      );
     }
 
     // Filter by Search Query
@@ -68,15 +81,10 @@ function ProductosPage() {
     });
 
     return result;
-  }, [products, filter, searchQuery, sortBy]);
+  }, [products, filter, brandFilter, searchQuery, sortBy]);
 
-  const handleAddToCart = (product: any) => {
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      img: product.img
-    } as any, 1);
+  const handleAddToCart = (product: Product) => {
+    addToCart(product, 1);
   };
 
   const renderStars = (rating: number = 5) => {
@@ -108,8 +116,25 @@ function ProductosPage() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>
               <span>Catálogo</span>
             </nav>
-            <h1 className="elite-catalog-title">Nuestro <span>Catálogo</span></h1>
-            <p className="elite-catalog-subtitle">Suplementos premium seleccionados para cada fase de tu entrenamiento</p>
+            <h1 className="elite-catalog-title">
+              {brandFilter
+                ? <><span>{brandFilter.charAt(0).toUpperCase() + brandFilter.slice(1)}</span> — Productos</>
+                : <>Nuestro <span>Catálogo</span></>}
+            </h1>
+            <p className="elite-catalog-subtitle">
+              {brandFilter
+                ? `Mostrando productos de ${brandFilter.charAt(0).toUpperCase() + brandFilter.slice(1)}`
+                : 'Suplementos premium seleccionados para cada fase de tu entrenamiento'}
+            </p>
+            {brandFilter && (
+              <button
+                className="elite-filter-chip"
+                style={{ marginTop: '0.75rem' }}
+                onClick={() => { setBrandFilter(''); window.history.replaceState(null, '', '/productos'); }}
+              >
+                ✕ Limpiar filtro de marca
+              </button>
+            )}
           </div>
         </div>
 
