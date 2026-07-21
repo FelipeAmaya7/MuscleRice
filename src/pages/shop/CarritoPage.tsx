@@ -1,221 +1,328 @@
 import { Link } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
+import type { CartItem } from '../../types';
 
-function CarritoPage() {
-  const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
-  const SHIPPING_FEE = 5000;
+// ─────────────────────────────────────────────────────────────────────────────
+// Constantes
+// ─────────────────────────────────────────────────────────────────────────────
+const FREE_SHIPPING_THRESHOLD = 150_000;
+const SHIPPING_FEE = 12_000;
 
-  const formatCurrency = (value: number) => {
-    return '$' + new Intl.NumberFormat('es-CO', {
-      minimumFractionDigits: 0,
-    }).format(value);
-  };
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers
+// ─────────────────────────────────────────────────────────────────────────────
+function formatCOP(value: number): string {
+  return (
+    '$' +
+    new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0 }).format(value)
+  );
+}
 
-  const total = totalPrice > 0 ? totalPrice + SHIPPING_FEE : 0;
+// ─────────────────────────────────────────────────────────────────────────────
+// Sub-componente: fila de producto
+// ─────────────────────────────────────────────────────────────────────────────
+interface CartItemRowProps {
+  item: CartItem;
+  onUpdateQty: (id: string, qty: number) => void;
+  onRemove: (id: string) => void;
+}
+
+function CartItemRow({ item, onUpdateQty, onRemove }: CartItemRowProps) {
+  const unitPrice = formatCOP(item.price);
+  const totalPrice = formatCOP(item.price * item.quantity);
+  const variant = item.category ?? null;
 
   return (
-    <>
-      <style>{`
-        .carrito-page-wrapper {
-            margin: 0;
-            padding: 0;
-            background-color: #ffffff;
-            font-family: Arial, sans-serif;
-            color: #222;
-        }
+    <article className="cp-item" aria-label={`Producto: ${item.name}`}>
+      {/* Imagen */}
+      <div className="cp-item-img-wrap">
+        <img
+          src={item.image}
+          alt={item.name}
+          className="cp-item-img"
+          loading="lazy"
+          width={110}
+          height={110}
+        />
+      </div>
 
-        /* Logo y encabezado */
-        .carrito-page-wrapper header {
-            background-color: white;
-            padding: 15px 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 3px solid #2ecc71;
-        }
+      {/* Info central */}
+      <div className="cp-item-info">
+        <h2 className="cp-item-name">{item.name}</h2>
 
-        .carrito-page-wrapper .logo {
-            width: 140px;
-        }
+        {variant && (
+          <p className="cp-item-variant">
+            Categoría: <strong>{variant}</strong>
+          </p>
+        )}
 
-        .carrito-page-wrapper .btn-regresar {
-            background-color: #2ecc71;
-            padding: 10px 18px;
-            border-radius: 8px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
+        <p className="cp-item-unit-price">Precio unitario: {unitPrice}</p>
 
-        /* Contenedor principal */
-        .carrito-page-wrapper .carrito-container {
-            width: 90%;
-            margin: 30px auto;
-            background: #f8f8f8;
-            padding: 25px;
-            border-radius: 12px;
-            border: 2px solid #2ecc71;
-        }
+        {/* Selector de cantidad */}
+        <div
+          className="cp-qty-controls"
+          role="group"
+          aria-label="Selector de cantidad"
+        >
+          <button
+            className="cp-qty-btn"
+            aria-label="Disminuir cantidad"
+            onClick={() => onUpdateQty(item.id, item.quantity - 1)}
+            disabled={item.quantity <= 1}
+            id={`qty-minus-${item.id}`}
+          >
+            −
+          </button>
+          <span
+            className="cp-qty-display"
+            aria-live="polite"
+            aria-label={`Cantidad: ${item.quantity}`}
+          >
+            {item.quantity}
+          </span>
+          <button
+            className="cp-qty-btn"
+            aria-label="Aumentar cantidad"
+            onClick={() => onUpdateQty(item.id, item.quantity + 1)}
+            id={`qty-plus-${item.id}`}
+          >
+            +
+          </button>
+        </div>
 
-        .carrito-page-wrapper h2 {
-            color: #2ecc71;
-            margin-bottom: 20px;
-        }
-
-        /* Producto */
-        .carrito-page-wrapper .item {
-            display: flex;
-            align-items: center;
-            background: white;
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid #2ecc71;
-            margin-bottom: 20px;
-        }
-
-        .carrito-page-wrapper .product-img {
-            width: 160px;
-            height: 160px;
-            object-fit: cover;
-            border-radius: 12px;
-            border: 2px solid #2ecc71;
-        }
-
-        .carrito-page-wrapper .item-info {
-            flex: 1;
-            margin-left: 20px;
-        }
-
-        .carrito-page-wrapper .item-info h3 {
-            margin: 0;
-            font-size: 20px;
-        }
-
-        .carrito-page-wrapper .precio {
-            font-size: 20px;
-            font-weight: bold;
-            color: #2ecc71;
-        }
-
-        /* Cantidad */
-        .carrito-page-wrapper .cantidad-controls {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .carrito-page-wrapper .cantidad-controls button {
-            width: 32px;
-            height: 32px;
-            background: #2ecc71;
-            border: none;
-            color: white;
-            font-size: 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .carrito-page-wrapper .cantidad-controls span {
-            padding: 0 10px;
-            font-size: 18px;
-        }
-
-        .carrito-page-wrapper .btn-eliminar {
-            background-color: #e74c3c;
-            padding: 10px 15px;
-            border: none;
-            color: white;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Resumen */
-        .carrito-page-wrapper .resumen {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #2ecc71;
-        }
-
-        .carrito-page-wrapper .btn-pagar {
-            width: 100%;
-            background: #2ecc71;
-            padding: 14px;
-            border: none;
-            font-size: 18px;
-            border-radius: 10px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .carrito-page-wrapper .btn-pagar:hover {
-            background: #27ae60;
-        }
-        
-        @media (max-width: 600px) {
-            .carrito-page-wrapper .item {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .carrito-page-wrapper .product-img {
-                width: 100%;
-                height: auto;
-                max-height: 260px;
-            }
-            .carrito-page-wrapper .item-info {
-                margin-left: 0;
-                margin-top: 10px;
-            }
-        }
-      `}</style>
-      
-      <div className="carrito-page-wrapper">
-        <div className="carrito-container">
-
-            <h2>🛒 Tu Carrito</h2>
-
-            {cart.length > 0 ? (
-              <div id="cart-content-wrapper">
-                  <div id="cart-items-list">
-                      {cart.map((item) => (
-                        <div className="item" key={item.id}>
-                          <img src={item.image} className="product-img" alt={item.name} />
-                          <div className="item-info">
-                            <h3>{item.name}</h3>
-                            <div className="cantidad-controls">
-                              <button className="btn-qty-minus" aria-label="Disminuir cantidad" onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                              <span className="qty-display">{item.quantity}</span>
-                              <button className="btn-qty-plus" aria-label="Aumentar cantidad" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                            </div>
-                          </div>
-                          <div className="precio">{formatCurrency(item.price * item.quantity)}</div>
-                          <button className="btn-eliminar" aria-label="Eliminar producto de compra" onClick={() => removeFromCart(item.id)}>Eliminar</button>
-                        </div>
-                      ))}
-                  </div>
-
-                  <div className="resumen" id="cart-summary">
-                      <h3>Resumen del pedido</h3>
-                      <p>Subtotal: <strong id="cart-subtotal">{formatCurrency(totalPrice)}</strong></p>
-                      <p>Envío: <strong id="cart-shipping">{formatCurrency(SHIPPING_FEE)}</strong></p>
-                      <p>Total: <strong id="cart-total">{formatCurrency(total)}</strong></p>
-
-                      <button className="btn-pagar">Proceder al pago</button>
-                  </div>
-              </div>
-            ) : (
-              <div id="cart-empty-state" className="empty-state text-center">
-                  <div className="empty-state-icon">🏋️</div>
-                  <h3>TU CARRITO ESTÁ VACÍO</h3>
-                  <p>¡Empieza a entrenar tu mutación! 🏋️</p>
-                  <Link to="/productos" className="btn-regresar d-inline-block">Ver productos</Link>
-              </div>
-            )}
-
+        {/* Acciones rápidas */}
+        <div className="cp-item-actions">
+          <button
+            className="cp-action-btn cp-action-btn--delete"
+            onClick={() => onRemove(item.id)}
+            aria-label={`Eliminar ${item.name} del carrito`}
+            id={`btn-remove-${item.id}`}
+          >
+            🗑️ Eliminar
+          </button>
+          <span className="cp-action-divider" aria-hidden="true" />
+          <button
+            className="cp-action-btn cp-action-btn--save"
+            aria-label={`Guardar ${item.name} para más tarde`}
+            id={`btn-save-${item.id}`}
+          >
+            🔖 Guardar para después
+          </button>
         </div>
       </div>
-    </>
+
+      {/* Precio total de la línea */}
+      <div className="cp-item-price-col">
+        <span
+          className="cp-item-total-price"
+          aria-label={`Total línea: ${totalPrice}`}
+        >
+          {totalPrice}
+        </span>
+      </div>
+    </article>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sub-componente: Sidebar resumen
+// ─────────────────────────────────────────────────────────────────────────────
+interface OrderSummaryProps {
+  subtotal: number;
+  itemCount: number;
+}
+
+function OrderSummary({ subtotal, itemCount }: OrderSummaryProps) {
+  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
+  const shipping = isFreeShipping ? 0 : SHIPPING_FEE;
+  const total = subtotal + shipping;
+  const remainingForFree = FREE_SHIPPING_THRESHOLD - subtotal;
+
+  return (
+    <aside className="cp-sidebar-col" aria-label="Resumen del pedido">
+      <div className="cp-summary-card">
+        <h2 className="cp-summary-title">Resumen del pedido</h2>
+
+        {/* Indicador envío gratis */}
+        {!isFreeShipping && (
+          <p className="cp-shipping-alert">
+            ¡Agrega <strong>{formatCOP(remainingForFree)}</strong> más y obtén
+            envío gratis 🚚
+          </p>
+        )}
+
+        <div className="cp-summary-lines">
+          <div className="cp-summary-line">
+            <span className="cp-summary-line--label">
+              Subtotal ({itemCount} {itemCount === 1 ? 'producto' : 'productos'})
+            </span>
+            <span
+              className="cp-summary-line--value"
+              id="cart-subtotal"
+            >
+              {formatCOP(subtotal)}
+            </span>
+          </div>
+
+          <div className="cp-summary-line cp-summary-line--shipping">
+            <span className="cp-summary-line--label">Envío</span>
+            <span className="cp-summary-line--value" id="cart-shipping">
+              {isFreeShipping ? '¡Gratis! 🎉' : formatCOP(shipping)}
+            </span>
+          </div>
+        </div>
+
+        <hr className="cp-summary-divider" />
+
+        <div className="cp-summary-total">
+          <span className="cp-summary-total-label">Total</span>
+          <span className="cp-summary-total-value" id="cart-total">
+            {formatCOP(total)}
+          </span>
+        </div>
+
+        {/* CTA principal */}
+        <button
+          className="cp-btn-checkout"
+          id="btn-proceder-pago"
+          type="button"
+          aria-label="Proceder al pago"
+        >
+          <span className="cp-btn-checkout-icon">🔒</span>
+          Proceder al pago
+        </button>
+
+        <a href="/productos" className="cp-continue-link" id="link-seguir-comprando">
+          ← Seguir comprando
+        </a>
+
+        {/* Métodos de pago */}
+        <div className="cp-payment-methods" aria-label="Métodos de pago aceptados">
+          <p className="cp-payment-title">Métodos de pago aceptados</p>
+          <div className="cp-payment-logos">
+            <span className="cp-payment-badge">
+              <span className="cp-payment-badge-icon">💵</span>
+              Efectivo
+            </span>
+            <span className="cp-payment-badge">
+              <span className="cp-payment-badge-icon">🏦</span>
+              PSE
+            </span>
+            <span className="cp-payment-badge">
+              <span className="cp-payment-badge-icon">📱</span>
+              Nequi
+            </span>
+            <span className="cp-payment-badge">
+              <span className="cp-payment-badge-icon">💳</span>
+              Tarjeta
+            </span>
+          </div>
+        </div>
+
+        {/* Badges de confianza */}
+        <div className="cp-trust-badges" role="list">
+          <div className="cp-trust-item" role="listitem">
+            <span className="cp-trust-icon">✅</span>
+            <span>Compra 100% segura y encriptada</span>
+          </div>
+          <div className="cp-trust-item" role="listitem">
+            <span className="cp-trust-icon">🔄</span>
+            <span>Devoluciones hasta 30 días</span>
+          </div>
+          <div className="cp-trust-item" role="listitem">
+            <span className="cp-trust-icon">📦</span>
+            <span>Envío a todo Colombia</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Sub-componente: Estado vacío
+// ─────────────────────────────────────────────────────────────────────────────
+function EmptyCartState() {
+  return (
+    <div
+      className="cp-empty-state"
+      id="cart-empty-state"
+      role="status"
+      aria-label="Carrito vacío"
+    >
+      <div className="cp-empty-icon-wrapper" aria-hidden="true">
+        🛒
+      </div>
+      <h2 className="cp-empty-title">Tu carrito está vacío</h2>
+      <p className="cp-empty-subtitle">
+        ¡Empieza a entrenar tu mutación!<br />
+        Descubre nuestros suplementos premium y proteínas de alto rendimiento.
+      </p>
+      <Link
+        to="/productos"
+        className="cp-btn-explore"
+        id="btn-ver-productos"
+        aria-label="Ver catálogo de productos"
+      >
+        🏋️ Explorar productos
+      </Link>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Componente principal
+// ─────────────────────────────────────────────────────────────────────────────
+function CarritoPage() {
+  const { cart, removeFromCart, updateQuantity, totalPrice, totalCount } =
+    useCart();
+
+  return (
+    <main className="cp-page" id="carrito-page">
+      {/* Breadcrumb */}
+      <nav className="cp-breadcrumb" aria-label="Migas de pan">
+        <Link to="/">Inicio</Link>
+        <span aria-hidden="true">›</span>
+        <span aria-current="page">Tu Carrito</span>
+      </nav>
+
+      {/* Título */}
+      <header className="cp-title">
+        <span className="cp-title-icon" aria-hidden="true">🛒</span>
+        <h1>Tu Carrito</h1>
+        {totalCount > 0 && (
+          <span className="cp-title-count">
+            {totalCount} {totalCount === 1 ? 'producto' : 'productos'}
+          </span>
+        )}
+      </header>
+
+      {cart.length > 0 ? (
+        /* Layout de dos columnas */
+        <div className="cp-layout" id="cart-content-wrapper">
+          {/* Columna izquierda — productos */}
+          <section
+            className="cp-items-col"
+            id="cart-items-list"
+            aria-label="Productos en el carrito"
+          >
+            {cart.map((item: CartItem) => (
+              <CartItemRow
+                key={item.id}
+                item={item}
+                onUpdateQty={updateQuantity}
+                onRemove={removeFromCart}
+              />
+            ))}
+          </section>
+
+          {/* Columna derecha — resumen */}
+          <OrderSummary subtotal={totalPrice} itemCount={totalCount} />
+        </div>
+      ) : (
+        <EmptyCartState />
+      )}
+    </main>
   );
 }
 

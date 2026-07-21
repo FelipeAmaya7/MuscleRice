@@ -103,7 +103,7 @@ const mapDbProductToProduct = (dbProduct: any): Product => {
     rating: 5,
     ratingCount: 15,
     badge: dbProduct.precio > 120000 ? { text: "Premium", type: "premium" } : undefined
-  } as any;
+  };
 };
 
 export const apiGetProducts = async (): Promise<Product[]> => {

@@ -1,8 +1,42 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
 import { useCart } from '../../hooks/useCart';
+
+// Brands list — adjust logos/slugs as your catalog grows
+const BRANDS = [
+  { slug: 'optimum',   label: 'Optimum Nutrition', icon: '💪' },
+  { slug: 'dymatize',  label: 'Dymatize',           icon: '🏋️' },
+  { slug: 'muscletech',label: 'MuscleTech',          icon: '⚡' },
+  { slug: 'bsn',       label: 'BSN',                 icon: '🔥' },
+  { slug: 'cellucor',  label: 'Cellucor (C4)',        icon: '🚀' },
+  { slug: 'nutrex',    label: 'Nutrex (Lipo6)',       icon: '🌡️' },
+  { slug: 'orgain',    label: 'Orgain / Vega',        icon: '🌱' },
+  { slug: 'quest',     label: 'Quest Nutrition',      icon: '🍫' },
+];
 
 function Header() {
   const { totalCount, totalPrice } = useCart();
+  const navigate = useNavigate();
+
+  // Brands dropdown state
+  const [brandsOpen, setBrandsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLLIElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setBrandsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleBrandSelect = (slug: string) => {
+    setBrandsOpen(false);
+    navigate(`/productos?brand=${slug}`);
+  };
 
   // Formatear precio para el Header
   const formattedPrice = new Intl.NumberFormat('es-CO', {
@@ -62,7 +96,58 @@ function Header() {
                 <ul className="nav navbar-nav main-nav">
                   <li className="active"><Link to="/">Inicio</Link></li>
                   <li><Link to="/categorias">Categorías</Link></li>
-                  <li><Link to="/marcas">Marcas</Link></li>
+                  {/* ── Brands Dropdown ── */}
+                  <li
+                    ref={dropdownRef}
+                    className={`nav-dropdown-wrap${brandsOpen ? ' is-open' : ''}`}
+                  >
+                    <button
+                      className="nav-dropdown-trigger"
+                      aria-haspopup="listbox"
+                      aria-expanded={brandsOpen}
+                      onClick={() => setBrandsOpen(prev => !prev)}
+                    >
+                      Marcas
+                      <svg
+                        className="nav-dropdown-caret"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden="true"
+                      >
+                        <polyline points="6 9 12 15 18 9" />
+                      </svg>
+                    </button>
+
+                    {brandsOpen && (
+                      <div className="nav-dropdown-menu" role="listbox" aria-label="Filtrar por marca">
+                        <div className="nav-dropdown-header">Filtrar por marca</div>
+                        <ul className="nav-dropdown-list">
+                          {BRANDS.map(brand => (
+                            <li key={brand.slug}>
+                              <button
+                                role="option"
+                                className="nav-dropdown-item"
+                                onClick={() => handleBrandSelect(brand.slug)}
+                              >
+                                <span className="nav-dropdown-item-icon">{brand.icon}</span>
+                                <span className="nav-dropdown-item-label">{brand.label}</span>
+                                <svg className="nav-dropdown-item-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                        <div className="nav-dropdown-footer">
+                          <button className="nav-dropdown-all" onClick={() => { setBrandsOpen(false); navigate('/productos'); }}>
+                            Ver todos los productos
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </li>
                   <li><Link to="/ofertas">Ofertas</Link></li>
                   <li><a href="#" className="sale-link">Sale</a></li>
                 </ul>

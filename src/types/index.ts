@@ -5,9 +5,13 @@ export interface Product {
   image: string;
   category?: string;
   description?: string;
+  brand?: string;
+  rating?: number;
+  ratingCount?: number;
+  oldPrice?: number;
   badge?: {
     text: string;
-    color: string; // ej: 'green', 'orange'
+    type: string; // ej: 'premium', 'sale', 'new'
   };
 }
 
