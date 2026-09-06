@@ -72,7 +72,7 @@ function Header() {
                   <i className="fa fa-user-circle-o"></i>
                   <span>Iniciar sesión</span>
                 </Link>
-                <Link to="/registro" className="btn-auth btn-auth-register" aria-label="Crear cuenta">
+                <Link to="/login" className="btn-auth btn-auth-register" aria-label="Crear cuenta">
                   <i className="fa fa-user-plus"></i>
                   <span>Crear cuenta</span>
                 </Link>
