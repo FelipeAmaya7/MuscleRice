@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 
@@ -8,11 +8,10 @@ import ProductosPage from './pages/shop/ProductosPage';
 import SingleProductPage from './pages/shop/SingleProductPage';
 import CarritoPage from './pages/shop/CarritoPage';
 import LoginPage from './pages/auth/LoginPage';
-import RegistroPage from './pages/auth/RegistroPage';
 import ContactoPage from './pages/contacto/ContactoPage';
 import BlogPage from './pages/blog/BlogPage';
 import SingleBlogPage from './pages/blog/SingleBlogPage';
-import UsuarioPage from './pages/profile/UsuarioPage';
+import ProfilePage from './pages/profile/ProfilePage';
 import FaqPage from './pages/info/FaqPage';
 import NotFoundPage from './pages/info/NotFoundPage';
 
@@ -41,12 +40,15 @@ function App() {
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/single" element={<SingleBlogPage />} />
-          <Route path="/profile" element={<UsuarioPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
         </Route>
 
         {/* Rutas sin Header ni Footer */}
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/registro" element={<RegistroPage />} />
+
+        {/* /registro redirige a /login (ya no existe como página separada) */}
+        <Route path="/registro" element={<Navigate to="/login" replace />} />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

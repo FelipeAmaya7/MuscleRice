@@ -26,3 +26,13 @@ export interface User {
   avatar?: string;
   role?: 'admin' | 'customer';
 }
+
+export interface Address {
+  id: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  city: string;
+  zipCode: string;
+  phone: string;
+}

@@ -1,113 +1,571 @@
-/* CONTENEDOR */
-.perfil-container {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+/* =================================================================
+   _profile.css — Estilos Premium para el Panel de Perfil
+   
+   Prefijo: profile-* para no contaminar otros componentes.
+   Usa los tokens globales --mr-* cuando sea posible y los
+   tokens --auth-* para mantener consistencia visual con el auth flow.
+   ================================================================= */
+
+/* --- 1. LAYOUT DE PÁGINA --- */
+.profile-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-}
-
-/* TARJETA */
-.perfil-card {
-  background: #fff;
-  width: 100%;
-  max-width: 420px;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-  overflow: hidden;
-  font-family: 'Segoe UI', sans-serif;
-}
-
-/* HEADER */
-.perfil-header {
-  background: #1e1e1e;
-  color: #fff;
+  background: #f8f9fa;
   padding: 40px 20px;
-  text-align: center;
+  font-family: 'Inter', 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* AVATAR */
-.perfil-avatar {
-  width: 90px;
-  height: 90px;
-  background: #2ecc71;
-  border-radius: 50%;
+.profile-container {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* --- 2. HEADER DEL PERFIL --- */
+.profile-header {
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin: 0 auto 15px;
-  font-size: 36px;
-  color: #000;
+  gap: 16px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
-/* TEXTO */
-.perfil-header h2 {
-  font-size: 22px;
-  margin-bottom: 5px;
+.profile-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.perfil-header p {
+.profile-avatar span {
+  font-size: 24px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0 0 2px 0;
+}
+
+.profile-email {
   font-size: 14px;
-  opacity: 0.8;
+  color: #6b7280;
+  margin: 0;
 }
 
-/* OPCIONES */
-.perfil-opciones {
-  padding: 25px;
+/* --- 3. BOTÓN CERRAR SESIÓN --- */
+.btn-logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-logout:hover {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+/* --- 4. TABS --- */
+.profile-tabs {
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 4px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 24px;
+}
+
+.tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.tab-btn:hover {
+  color: #1a1a2e;
+  background: #f3f4f6;
+}
+
+.tab-btn--active {
+  color: #fff;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.tab-btn--active:hover {
+  color: #fff;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.tab-btn i {
+  font-size: 14px;
+}
+
+/* --- 5. TAB CONTENT --- */
+.profile-content {
+  animation: profileFadeIn 0.3s ease-out;
+}
+
+@keyframes profileFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab-panel {
+  animation: profileFadeIn 0.3s ease-out;
+}
+
+/* --- 6. SECTION CARDS --- */
+.section-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 16px 0;
+}
+
+.section-header .section-title {
+  margin-bottom: 0;
+}
+
+/* --- 7. INFO ROWS (Perfil) --- */
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.info-label {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.info-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a2e;
+}
+
+/* --- 8. EMPTY STATE --- */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(46, 204, 113, 0.1);
+  margin-bottom: 16px;
+}
+
+.empty-icon i {
+  font-size: 30px;
+  color: #2ecc71;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0 0 8px 0;
+}
+
+.empty-state p {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0 0 24px 0;
+}
+
+.empty-inline {
+  text-align: center;
+  padding: 24px;
+  color: #9ca3af;
+}
+
+.empty-inline i {
+  font-size: 24px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.empty-inline p {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* --- 9. BOTONES --- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 204, 113, 0.35);
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #f3f4f6;
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: inherit;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-secondary:hover {
+  background: #e5e7eb;
+  color: #1a1a2e;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-add:hover {
+  background: rgba(46, 204, 113, 0.2);
+}
+
+/* --- 10. ADDRESS LIST --- */
+.address-list {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 12px;
 }
 
-/* BOTONES */
-.btn-perfil {
-  padding: 15px;
+.address-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  border: 1px solid #f3f4f6;
+  transition: all 0.2s ease;
+}
+
+.address-card:hover {
+  border-color: #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.address-info strong {
+  font-size: 14px;
+  color: #1a1a2e;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.address-info p {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.btn-delete-addr {
+  background: none;
   border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: bold;
+  color: #d1d5db;
+  font-size: 14px;
   cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-delete-addr:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* --- 11. MODAL --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  transition: all 0.3s ease;
-  text-decoration: none;
+  z-index: 1000;
+  padding: 20px;
+  animation: modalOverlayIn 0.2s ease;
 }
 
-.btn-perfil i {
-  font-size: 16px;
+@keyframes modalOverlayIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.btn-perfil:hover {
-  transform: scale(1.04);
-  opacity: 0.9;
-  text-decoration: none;
+.modal-content {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  animation: modalContentIn 0.3s ease-out;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
-/* COLORES */
-.btn-perfil-success {
-  background: #2ecc71;
-  color: #000;
-}
-.btn-perfil-success:hover {
-  color: #000;
-}
-
-.btn-perfil-primary {
-  background: #3498db;
-  color: #fff;
-}
-.btn-perfil-primary:hover {
-  color: #fff;
+@keyframes modalContentIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
-.btn-perfil-danger {
-  background: #e74c3c;
-  color: #fff;
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #f3f4f6;
 }
-.btn-perfil-danger:hover {
-  color: #fff;
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  margin: 0;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 18px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  color: #1a1a2e;
+  background: #f3f4f6;
+}
+
+/* --- 12. ADDRESS FORM --- */
+.address-form {
+  padding: 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  background: #f8f9fa;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1a1a2e;
+  outline: none;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.form-group input:focus {
+  border-color: #2ecc71;
+  box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.15);
+  background: #fff;
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* --- 13. RESPONSIVE --- */
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 20px 16px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+
+  .btn-logout {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-page {
+    padding: 16px 12px;
+  }
+
+  .section-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .profile-header {
+    padding: 20px 16px;
+    border-radius: 12px;
+  }
+
+  .profile-tabs {
+    border-radius: 10px;
+  }
+
+  .tab-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions .btn-secondary,
+  .form-actions .btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
 }
